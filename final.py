@@ -180,7 +180,7 @@ if st.button("🚀 Run Extraction"):
             st.error("Excel must have a column named 'email'")
         else:
             st.info("🔄 Logging in to portal...")
-            session = login_to_portal(username, password)
+            session = login_to_portal(USERNAME,PASSWORD)
             if not session:
                 st.error("❌ Login failed. Check credentials.")
             else:
@@ -211,4 +211,5 @@ if st.button("🚀 Run Extraction"):
                     file_name=file_name,
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
+
 
