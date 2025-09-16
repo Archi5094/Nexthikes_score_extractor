@@ -25,22 +25,28 @@ st.set_page_config(
 # ----------------------------
 # LOGIN FUNCTION
 # ----------------------------
-def login_to_portal():
+def login_to_portal(username, password):
     s = requests.Session()
-    r = s.get(LOGIN_URL, timeout=20)
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
+        "Referer": LOGIN_URL,
+        "Accept-Language": "en-US,en;q=0.9",
+    }
+
+    r = s.get(LOGIN_URL, headers=headers, timeout=20)
     soup = BeautifulSoup(r.text, "html.parser")
     token_input = soup.find("input", {"name": "_token"})
     if not token_input:
         return None
     csrf_token = token_input["value"]
 
-    data = {"email": USERNAME, "password": PASSWORD, "_token": csrf_token}
-    resp = s.post(LOGIN_URL, data=data, timeout=20, allow_redirects=True)
+    data = {"email": username, "password": password, "_token": csrf_token}
+    resp = s.post(LOGIN_URL, data=data, headers=headers, timeout=20, allow_redirects=True)
 
     if "logout" in resp.text.lower() or "dashboard" in resp.text.lower():
         return s
-    else:
-        return None
+    return None
+
 
 # ----------------------------
 # FETCH CHAT HISTORY
@@ -180,7 +186,7 @@ if st.button("🚀 Run Extraction"):
             st.error("Excel must have a column named 'email'")
         else:
             st.info("🔄 Logging in to portal...")
-            session = login_to_portal()
+            session = login_to_portal(username,password)
             if not session:
                 st.error("❌ Login failed. Check credentials.")
             else:
@@ -211,6 +217,7 @@ if st.button("🚀 Run Extraction"):
                     file_name=file_name,
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
+
 
 
 
