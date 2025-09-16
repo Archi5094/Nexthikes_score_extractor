@@ -14,6 +14,8 @@ from io import BytesIO
 LOGIN_URL = "https://digicrome.org/admin/login"
 CHAT_URL_TEMPLATE = "https://digicrome.org/admin/internship/singlechat?search={email}"
 
+USERNAME = "twinklebaid@nexthikes.com"
+PASSWORD = "manila"
 st.set_page_config(
     page_title="Nexthikes Score Recorder",
     page_icon="📊",
@@ -23,7 +25,7 @@ st.set_page_config(
 # ----------------------------
 # LOGIN FUNCTION
 # ----------------------------
-def login_to_portal(username, password):
+def login_to_portal():
     s = requests.Session()
     r = s.get(LOGIN_URL, timeout=20)
     soup = BeautifulSoup(r.text, "html.parser")
@@ -32,7 +34,7 @@ def login_to_portal(username, password):
         return None
     csrf_token = token_input["value"]
 
-    data = {"email": username, "password": password, "_token": csrf_token}
+    data = {"email": USERNAME, "password": PASSWORD, "_token": csrf_token}
     resp = s.post(LOGIN_URL, data=data, timeout=20, allow_redirects=True)
 
     if "logout" in resp.text.lower() or "dashboard" in resp.text.lower():
@@ -209,3 +211,4 @@ if st.button("🚀 Run Extraction"):
                     file_name=file_name,
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
+
